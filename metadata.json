@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Copy of Aura: O Guia do Presente Perfeito",
+  "description": "Um ecossistema digital que transforma a ansiedade de presentear em um ato de conexão profunda através de inteligência afetiva.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

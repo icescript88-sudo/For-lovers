@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura | O Guia do Presente Perfeito</title>
+    <meta name="theme-color" content="#5E1914">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFCFB;
+            color: #4A0E0E;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        .petal-trail {
+            pointer-events: none;
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #F4C2C2, transparent);
+            border-radius: 50%;
+            animation: drift 2s forwards;
+        }
+        @keyframes drift {
+            to { transform: translate(var(--tw-x), var(--tw-y)) rotate(360deg); opacity: 0; }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Home Screen -->
+        <div id="home-screen" class="min-h-screen flex flex-col items-center justify-center p-6 text-center fade-in">
+            <div class="mb-8 relative">
+                <svg class="w-24 h-24 text-[#5E1914] animate-pulse-slow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+            </div>
+            <h1 class="text-5xl md:text-7xl mb-4 font-bold text-[#5E1914]">AURA</h1>
+            <p class="serif italic text-xl md:text-2xl mb-12 text-[#5E1914]/80">Onde o Sentimento Vira Presente</p>
+            
+            <div class="max-w-md glass p-8 rounded-[40px] shadow-xl border border-white/50">
+                <p class="text-lg mb-8 leading-relaxed">
+                    "Responda com o coração. Leva apenas 60 segundos para descobrirmos o que os olhos dele(a) dizem quando brilham."
+                </p>
+                <button onclick="startQuiz()" class="w-full py-5 px-8 rounded-full bg-[#5E1914] text-white text-xl font-medium shadow-lg hover:scale-105 transition-transform active:scale-95">
+                    Iniciar Oráculo
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="min-h-screen hidden flex flex-col items-center justify-center p-6">
+            <div class="w-full max-w-lg mb-12">
+                <div class="h-1 bg-[#F4C2C2]/30 rounded-full">
+                    <div id="progress-bar" class="h-1 bg-[#D4AF37] rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" class="text-center mt-4 text-sm font-medium tracking-widest uppercase text-[#5E1914]/60">
+                    Passo 1 de 5
+                </p>
+            </div>
+
+            <div class="w-full max-w-2xl glass p-8 md:p-12 rounded-[40px] shadow-2xl border border-white/50 fade-in">
+                <h2 id="question-text" class="text-3xl md:text-4xl font-bold mb-10 text-[#5E1914] leading-tight text-center">
+                    Pergunta aqui
+                </h2>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Options will be injected here -->
+                </div>
+
+                <div id="budget-container" class="hidden flex flex-col items-center gap-8">
+                    <div class="flex flex-col md:flex-row gap-6 w-full max-w-md">
+                        <div class="flex-1 flex flex-col">
+                            <label class="text-xs uppercase font-bold text-[#5E1914]/60 mb-2 px-2">Mínimo (R$)</label>
+                            <input type="number" id="min-budget" value="0" class="w-full bg-white/40 border border-[#F4C2C2]/40 rounded-2xl p-4 text-2xl font-bold text-[#5E1914] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <label class="text-xs uppercase font-bold text-[#5E1914]/60 mb-2 px-2">Máximo (R$)</label>
+                            <input type="number" id="max-budget" value="200" class="w-full bg-white/40 border border-[#F4C2C2]/40 rounded-2xl p-4 text-2xl font-bold text-[#5E1914] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50">
+                        </div>
+                    </div>
+                    <div class="w-full p-4 bg-[#F4C2C2]/10 rounded-2xl text-center">
+                        <p class="text-[#5E1914]/70 text-sm italic">
+                            "O valor real está na intenção. Deixe que a Aura encontre o equilíbrio perfeito."
+                        </p>
+                    </div>
+                    <button onclick="handleBudgetSubmit()" class="w-full py-5 px-8 rounded-full bg-[#5E1914] text-white text-xl font-medium shadow-lg hover:scale-105 transition-transform active:scale-95">
+                        Confirmar Investimento
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="min-h-screen hidden flex flex-col items-center justify-center p-6 text-center">
+            <div class="mb-8 relative">
+                <svg class="w-20 h-20 text-[#D4AF37] animate-pulse-slow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-4 text-[#5E1914]">Sintonizando emoções...</h2>
+            <p class="serif italic text-[#5E1914]/70 max-w-sm">
+                Nossa inteligência afetiva está buscando o presente que fará o coração dele(a) bater no ritmo do seu, respeitando seus limites.
+            </p>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="min-h-screen hidden p-6 md:p-12 max-w-5xl mx-auto fade-in">
+            <header class="mb-16 text-center">
+                <p class="text-sm tracking-widest uppercase text-[#D4AF37] font-bold mb-4">🏆 Perfil Revelado</p>
+                <h2 id="result-name" class="text-5xl md:text-7xl font-bold text-[#5E1914] mb-6">Nome do Perfil</h2>
+                <div id="stars-container" class="flex justify-center gap-1 mb-8">
+                    <!-- Stars will be injected here -->
+                </div>
+                <p id="result-description" class="text-xl md:text-2xl text-[#5E1914]/80 max-w-3xl mx-auto leading-relaxed serif">
+                    "Descrição do perfil..."
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- Suggestions will be injected here -->
+            </div>
+
+            <div class="glass p-8 md:p-12 rounded-[40px] mb-16 border border-[#D4AF37]/30">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3 text-[#5E1914]">
+                    <span class="text-[#D4AF37]">💡</span> Insight Psicológico
+                </h3>
+                <p id="psychological-tip" class="text-lg text-[#5E1914]/90 leading-relaxed italic">
+                    Dica psicológica...
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="glass p-8 rounded-[40px]">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-4">Mensagem Curta</h4>
+                    <p id="copy-short" class="text-lg font-medium text-[#5E1914] mb-6">...</p>
+                    <button onclick="copyToClipboard('copy-short')" class="text-sm font-bold text-[#5E1914]/60 hover:text-[#5E1914] transition-colors">COPIAR TEXTO</button>
+                </div>
+                <div class="glass p-8 rounded-[40px]">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-4">Carta de Amor</h4>
+                    <p id="copy-long" class="text-lg font-medium text-[#5E1914] mb-6 leading-relaxed">...</p>
+                    <button onclick="copyToClipboard('copy-long')" class="text-sm font-bold text-[#5E1914]/60 hover:text-[#5E1914] transition-colors">COPIAR CARTA</button>
+                </div>
+            </div>
+
+            <div class="text-center pb-12">
+                <button onclick="location.reload()" class="px-12 py-5 rounded-full border-2 border-[#5E1914] text-[#5E1914] font-bold hover:bg-[#5E1914] hover:text-white transition-all">
+                    Recomeçar Jornada
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.sh/@google/genai@^1.43.0";
+
+        // CONFIGURAÇÃO - Substitua pela sua chave se for hospedar no GitHub
+        // Para o ambiente de desenvolvimento, usamos a variável injetada.
+        const API_KEY = "AIzaSyB9DQCAwXlb2xBX40QOA7MqNHrYTpPmZRs"; // Se estiver no GitHub, coloque sua chave aqui.
+        
+        // No ambiente do AI Studio, tentamos pegar do process.env injetado pelo Vite (se existir)
+        // ou de uma variável global. Para simplificar no GitHub, o usuário deve preencher acima.
+        const finalApiKey = (typeof process !== 'undefined' && process.env && process.env.API_KEY) || API_KEY;
+
+        const QUIZ_QUESTIONS = [
+            {
+                id: 'essence',
+                question: 'Se o seu amor fosse uma música, qual seria o ritmo?',
+                type: 'options',
+                options: [
+                    { label: '🎹 Clássico e profundo', value: 'Romântico/a' },
+                    { label: '🛠️ Prático e constante', value: 'Prático/a' },
+                    { label: '🎨 Alternativo e vibrante', value: 'Criativo/a' },
+                    { label: '🚀 Épico e motivador', value: 'Ambicioso/a' },
+                    { label: '🎒 Um folk de viagem', value: 'Aventureiro/a' },
+                    { label: '☕ Acústico e relaxante', value: 'Caseiro/a' },
+                ]
+            },
+            {
+                id: 'safeHarbor',
+                question: 'O que faz ele(a) se sentir verdadeiramente amado(a)?',
+                type: 'options',
+                options: [
+                    { label: 'Uma mensagem surpresa no meio do dia', value: 'Atenção' },
+                    { label: 'Um jantar sem celulares', value: 'Tempo de qualidade' },
+                    { label: 'A casa organizada e o café pronto', value: 'Cuidado/Conforto' },
+                    { label: 'Um desafio superado juntos', value: 'Crescimento' },
+                ]
+            },
+            {
+                id: 'budget',
+                question: 'Qual o investimento planejado para este gesto?',
+                type: 'budget',
+            },
+            {
+                id: 'intention',
+                question: 'Hoje, qual a sua missão?',
+                type: 'options',
+                options: [
+                    { label: 'Fazer os olhos brilharem', value: 'Algo emocional' },
+                    { label: 'Facilitar a rotina', value: 'Algo útil' },
+                    { label: 'Criar uma memória eterna', value: 'Algo inesquecível' },
+                ]
+            },
+            {
+                id: 'moment',
+                question: 'Qual a moldura desta lembrança?',
+                type: 'options',
+                options: [
+                    { label: 'Dia dos Namorados', value: 'Dia dos Namorados' },
+                    { label: 'Aniversário', value: 'Aniversário' },
+                    { label: 'Pedido de Desculpas', value: 'Pedido de Desculpas' },
+                    { label: '"Só porque te amo"', value: 'Só porque te amo' },
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let answers = {};
+
+        window.startQuiz = () => {
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            renderQuestion();
+        };
+
+        function renderQuestion() {
+            const question = QUIZ_QUESTIONS[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100;
+
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').innerText = `Passo ${currentQuestionIndex + 1} de ${QUIZ_QUESTIONS.length}`;
+            document.getElementById('question-text').innerText = question.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            const budgetContainer = document.getElementById('budget-container');
+
+            if (question.type === 'options') {
+                optionsContainer.classList.remove('hidden');
+                budgetContainer.classList.add('hidden');
+                optionsContainer.innerHTML = '';
+                question.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'text-left p-6 rounded-3xl bg-white/50 border border-white/20 hover:bg-[#F4C2C2]/40 hover:border-[#F4C2C2] transition-all duration-300 group';
+                    btn.innerHTML = `<span class="text-lg md:text-xl font-medium group-hover:translate-x-2 inline-block transition-transform text-[#5E1914]">${opt.label}</span>`;
+                    btn.onclick = () => handleAnswer(question.id, opt.value);
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (question.type === 'budget') {
+                optionsContainer.classList.add('hidden');
+                budgetContainer.classList.remove('hidden');
+            }
+        }
+
+        window.handleAnswer = (id, value) => {
+            answers[id] = value;
+            nextStep();
+        };
+
+        window.handleBudgetSubmit = () => {
+            const min = document.getElementById('min-budget').value;
+            const max = document.getElementById('max-budget').value;
+            answers.minBudget = Number(min);
+            answers.maxBudget = Number(max);
+            nextStep();
+        };
+
+        function nextStep() {
+            if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finalizeQuiz();
+            }
+        }
+
+        async function finalizeQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            try {
+                const profile = await generateAuraProfile(answers);
+                renderResults(profile);
+            } catch (error) {
+                console.error("Erro:", error);
+                alert("Houve um pequeno descompasso emocional. Verifique sua chave de API e tente novamente.");
+                location.reload();
+            }
+        }
+
+        async function generateAuraProfile(answers) {
+            if (!finalApiKey || finalApiKey === "SUA_CHAVE_AQUI") {
+                throw new Error("API Key missing");
+            }
+
+            const ai = new GoogleGenAI({ apiKey: finalApiKey });
+            const prompt = `
+                Aja como um especialista em psicologia do amor e curador de presentes de luxo emocional.
+                Com base nestas respostas do teste de personalidade:
+                - Essência: ${answers.essence}
+                - O que faz se sentir amado: ${answers.safeHarbor}
+                - Missão: ${answers.intention}
+                - Ocasião: ${answers.moment}
+                - Orçamento planejado: Entre R$ ${answers.minBudget} e R$ ${answers.maxBudget}.
+
+                REGRAS DE ORÇAMENTO:
+                1. Você DEVE sugerir presentes que caibam rigorosamente dentro deste intervalo de preço (R$ ${answers.minBudget} a R$ ${answers.maxBudget}).
+                2. Se o orçamento for baixo (ex: até R$ 50), priorize presentes criativos, artesanais, experiências caseiras ou gestos simbólicos profundos.
+                3. Se o orçamento for alto, sugira itens de qualidade premium ou experiências exclusivas.
+
+                Gere um perfil psicológico detalhado chamado "Aura Profile" e sugira 2 presentes (um físico e uma experiência).
+                Gere também mensagens românticas (uma curta e uma longa) adaptadas para esse perfil.
+                Use um tom poético, empático e sofisticado.
+            `;
+
+            const response = await ai.models.generateContent({
+                model: "gemini-3-flash-preview",
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            name: { type: "STRING" },
+                            description: { type: "STRING" },
+                            emotionalImpact: { type: "NUMBER" },
+                            psychologicalTip: { type: "STRING" },
+                            suggestions: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        name: { type: "STRING" },
+                                        reason: { type: "STRING" },
+                                        emotion: { type: "STRING" },
+                                        whereToFind: { type: "STRING" },
+                                        type: { type: "STRING" },
+                                        estimatedPrice: { type: "STRING" }
+                                    },
+                                    required: ["name", "reason", "emotion", "whereToFind", "type", "estimatedPrice"]
+                                }
+                            },
+                            copies: {
+                                type: "OBJECT",
+                                properties: {
+                                    romantic: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            short: { type: "STRING" },
+                                            long: { type: "STRING" }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        required: ["name", "description", "emotionalImpact", "psychologicalTip", "suggestions", "copies"]
+                    }
+                }
+            });
+
+            return JSON.parse(response.text.trim());
+        }
+
+        function renderResults(profile) {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            document.getElementById('result-name').innerText = profile.name;
+            document.getElementById('result-description').innerText = `“${profile.description}”`;
+            document.getElementById('psychological-tip').innerText = profile.psychologicalTip;
+            document.getElementById('copy-short').innerText = profile.copies.romantic.short;
+            document.getElementById('copy-long').innerText = profile.copies.romantic.long;
+
+            const starsContainer = document.getElementById('stars-container');
+            starsContainer.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const star = document.createElement('span');
+                star.innerText = '★';
+                star.className = i < profile.emotionalImpact ? "text-[#D4AF37]" : "text-gray-300";
+                starsContainer.appendChild(star);
+            }
+
+            const suggestionsGrid = document.querySelector('#results-screen > div.grid');
+            suggestionsGrid.innerHTML = '';
+            profile.suggestions.forEach(sug => {
+                const card = document.createElement('div');
+                card.className = 'glass p-8 rounded-[40px] border border-white/40 hover:shadow-2xl transition-all group';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="px-4 py-1 rounded-full bg-[#5E1914]/10 text-[#5E1914] text-xs font-bold uppercase tracking-widest">
+                            ${sug.type === 'experience' ? '✨ Experiência' : '🎁 Presente Físico'}
+                        </span>
+                        <span class="text-[#D4AF37] font-bold">${sug.estimatedPrice}</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-[#5E1914] mb-4">${sug.name}</h4>
+                    <p class="text-[#5E1914]/70 mb-6 leading-relaxed">${sug.reason}</p>
+                    <div class="pt-6 border-t border-[#5E1914]/10">
+                        <p class="text-xs font-bold text-[#D4AF37] uppercase mb-1">Por que funciona?</p>
+                        <p class="text-sm italic text-[#5E1914]/80">"${sug.emotion}"</p>
+                    </div>
+                `;
+                suggestionsGrid.appendChild(card);
+            });
+        }
+
+        window.copyToClipboard = (id) => {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Texto copiado com sucesso!");
+            });
+        };
+
+        // Efeito de pétalas
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.95) {
+                const petal = document.createElement('div');
+                petal.className = 'petal-trail';
+                petal.style.left = `${e.pageX}px`;
+                petal.style.top = `${e.pageY}px`;
+                petal.style.setProperty('--tw-x', `${(Math.random() - 0.5) * 100}px`);
+                petal.style.setProperty('--tw-y', `${Math.random() * 100 + 50}px`);
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 2000);
+            }
+        });
+    </script>
+</body>
+</html>
