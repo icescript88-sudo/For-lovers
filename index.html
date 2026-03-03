@@ -180,20 +180,33 @@
             </div>
         </div>
     </div>
+<input id="input" placeholder="Escreve aqui" />
+<button onclick="perguntar()">Enviar</button>
+<pre id="output"></pre>
 
+<script type="module">
+  import { GoogleGenAI } from "https://esm.sh/@google/genai@^1.43.0";
+
+  const API_KEY = "AIzaSyB9DQCAwXlb2xBX40QOA7MqNHrYTpPmZRs";
+  const genAI = new GoogleGenAI(API_KEY);
+
+  async function perguntar() {
+    const texto = document.getElementById("input").value;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(texto);
+    document.getElementById("output").innerText = result.response.text();
+  }
+
+  window.perguntar = perguntar;
+</script>
     <script type="module">
         import { GoogleGenAI } from "https://esm.sh/@google/genai@^1.43.0";
 
         // CONFIGURAÇÃO - Substitua pela sua chave se for hospedar no GitHub
         // Para o ambiente de desenvolvimento, usamos a variável injetada.
         const API_KEY = "AIzaSyB9DQCAwXlb2xBX40QOA7MqNHrYTpPmZRs"; // Se estiver no GitHub, coloque sua chave aqui.
-        
-        // No ambiente do AI Studio, tentamos pegar do process.env injetado pelo Vite (se existir)
-        // ou de uma variável global. Para simplificar no GitHub, o usuário deve preencher acima.
-        const finalApiKey = (typeof process !== 'undefined' && process.env && process.env.API_KEY) || API_KEY;
-
-        const QUIZ_QUESTIONS = [
             {
+                const genAI = new GoogleGenAI(API_KEY);
                 id: 'essence',
                 question: 'Se o seu amor fosse uma música, qual seria o ritmo?',
                 type: 'options',
